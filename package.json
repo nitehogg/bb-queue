@@ -1,0 +1,18 @@
+{
+  "name": "bb-queue",
+  "version": "1.0.0",
+  "description": "An autonomous queue",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha spec/bbQueue.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "bb-queue"
+  },
+  "keywords": [
+    "queue"
+  ],
+  "author": "NiteHogg",
+  "license": "ISC"
+}
