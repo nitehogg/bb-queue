@@ -1,18 +1,23 @@
 {
   "name": "bb-queue",
   "version": "1.0.0",
-  "description": "An autonomous queue",
+  "description": "A simple, automated queue processor",
   "main": "index.js",
   "scripts": {
     "test": "mocha spec/bbQueue.spec.js"
   },
   "repository": {
     "type": "git",
-    "url": "bb-queue"
+    "url": "https://github.com/nitehogg/bb-queue"
   },
   "keywords": [
-    "queue"
+    "queue",
+    "auto",
+    "automatic"
   ],
   "author": "NiteHogg",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^2.3.2"
+  }
 }
