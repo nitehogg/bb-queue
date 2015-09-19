@@ -1,42 +1,114 @@
-*The name "r6" is simply a numeronym of "require". In this case, 'r' followed by 6 letters.*
+A simple, automated queue processor
 
 ###### How to install
-    npm install r6
+    npm install bb-queue
 
 ###### How to use
-    var r6 = require('r6')({ options });
+    var BBQ = require('bb-queue');
+    var bbq = new BBQ(callback, { options }, context);
 
-###### Options
-- **contextPath**: The root directory to search from. If not specified, r6 will use the directory of your main js file (entry point).
-- **useGlobal**: Assigns the r6 function to the global scope as "r6" and returns *undefined*. This prevents you from having to re-require r6 in all js files.
-- **legacy**: Utilizes local module search, and allows for the omitting of a leading forward-slash '/' for local modules. *This is to retain backwards-compatibility, but it's use is **not recommended***.
+<table>
+  <thead>
+    <tr>
+      <th>Arguments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td>function(object)</td>
+      <td>A function that takes one argument, this being the queue object
+      to be processed. This function is called on each item of the queue</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td>object [optional]</td>
+      <td>
+        <ul>
+          <li>lifo      [default: false]: Processes queue from end to start</li>
+          <li>interval  [ default: 500ms]: Sets the queue polling interval</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>context</td>
+      <td>objecy [optional]</td>
+      <td>The object that the callback will be bound to, making the object accessible through the *this* keyword</td>
+    </tr>
+  </body>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>Methods</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>add(object)</td>
+      <td>Adds an object to the queue, can be any type of object as long as you callback can handle it</td>
+    </tr>
+    <tr>
+      <td>clear()</td>
+      <td>Clears the queue</td>
+    </tr>
+    <tr>
+      <td>stop()</td>
+      <td>Stops/Pauses queue processing</td>
+    </tr>
+    <tr>
+      <td>resume()</td>
+      <td>Resumes queue processing</td>
+    </tr>
+  </tbody>
+</table>
 
 ###### *Examples*
-    // Instead of...
-    var fu = require('../../../../fight/kung');
+    /*
+     * Queue is immediately monitored upon instantiation. Each object of the
+     * queue is passed into the callback for processing one at a time.
+     */     
+    var BBQ = require('bb-queue');
+    var bbq = new BBQ(function(ingredient) {
+      console.log(ingredient);
+    });
 
+    bbq.add('bread');
+    bbq.add('lettace');
+    // You can pass multiple items in one call to add()
+    bbq.add('mustard', 'onion', 'bacon');
 
-    // Loads module using the main js file's directory as the context
-    var r6 = require('r6')();
-    var fu = r6('/fight/kung');
+    /*
+     * Will print...
+     * bread
+     * lettace
+     * mustard
+     * onion
+     * bacon
+     */
 
+    bbq.stop();     // Stop/Pause processing
+    bbq.add('cat'); // oops
+    bbq.clear();    // Clear queue
 
-    // Use with installed modules if you want
-    // (In this case, the "optimize" option is suggested)
-    var r6 = require('r6')({ contextPath: __dirname });
-    var fu = r6('/fight/kung');
-    var path = r6('path');
+    bbq.add('turkey', 'ham');
+    bbq.resume();   // Resume processing
 
+    bbq.stop();     // Don't leave the queue processing if re-assigning
+    bbq = new BBQ(function(color) {
+      console.log(color);
+    }, { lifo: true });
 
-    // Use as a global
-    // File #1
-    require('r6')({ contextPath: __dirname, useGlobal: true });
-    var fu = r6('/fight/kung');
+    bbq.add('red', 'green', 'purple');
 
-    // File #2
-    var booty = r6('/pirate/booty')
+    /*
+     * Prints...
+     * purple
+     * green
+     * red
+     */
 
 ###### Change Log
-**2.0.0**
-- Removed optimize option and made leading slashes mandatory
-- Added legacy option for backwards-compatibility
+**1.0.0**
+- First release
