@@ -56,7 +56,58 @@ describe('Create a queue', function() {
       done();
     }, null, context);
 
-    q.add('just one');
+    q.add('a');
+  });
+
+  it('with asynchronous processing', function(done) {
+    var idx = 0;
+    var functionOneDone = false;
+
+    var q = new BBQ(function(object) {
+      object();
+    });
+
+    q.add(
+      function() {
+        setTimeout(function() {
+          functionOneDone = true;
+        }, 900);
+      },
+      function() {
+        setTimeout(function() {
+          assert.notEqual(functionOneDone, true);
+          done();
+        }, 100);
+      });
+  });
+
+  it('with synchronous processing', function(done) {
+    var idx = 0;
+    var functionOneDone = false;
+
+    var q = new BBQ(function(object, next) {
+      object(next);
+
+      // If we're on the second function, verify
+      // previous function is complete
+      if (idx++ == 1) {
+        assert(functionOneDone);
+        done();
+      }
+    });
+
+    q.add(
+      function(next) {
+        setTimeout(function() {
+          functionOneDone = true;
+          next();
+        }, 900);
+      },
+      function(next) {
+        setTimeout(function() {
+          next();
+        }, 100);
+      });
   });
 });
 

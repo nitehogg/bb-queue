@@ -16,7 +16,7 @@ A simple, automated queue processor
   <tbody>
     <tr>
       <td>callback</td>
-      <td>function(object)</td>
+      <td>function(object, [next])</td>
       <td>A function that takes one argument, this being the queue object
       to be processed. This function is called on each item of the queue</td>
     </tr>
@@ -32,7 +32,7 @@ A simple, automated queue processor
     </tr>
     <tr>
       <td>context</td>
-      <td>objecy [optional]</td>
+      <td>object [optional]</td>
       <td>The object that the callback will be bound to, making the object accessible through the *this* keyword</td>
     </tr>
   </body>
@@ -63,6 +63,18 @@ A simple, automated queue processor
     </tr>
   </tbody>
 </table>
+
+##### Syncronous Processing
+If a second parameter is defined on the callback, calling that parameter as a function will cause the queue to advance to the next item.
+
+    var bbq = new BBQ(function(item, next) {
+
+      process(function() {
+        console.log(item);
+        next();
+      });
+    });
+
 
 ###### *Examples*
     /*

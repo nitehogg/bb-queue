@@ -51,9 +51,12 @@ function watchQueue(instance) {
     if (instance.queue.length > 0) {
       clearInterval(instance.interval);
 
-      processQueue(instance);
-
-      instance.interval = setInterval(watchQueue(instance), instance.intervalMs);
+      if (instance.cb.length == 2) {
+        processQueueSync(instance);
+      }
+      else {
+        processQueue(instance);
+      }
     }
   };
 }
@@ -62,13 +65,35 @@ function processQueue(instance) {
   var object = null;
 
   while(instance.queue.length > 0) {
-
-    if (instance.lifo === true) {
-      object = instance.queue.pop();
-    }
-    else {
-      object = instance.queue.shift();
-    }
+    object = next(instance.queue, instance.lifo);
     instance.cb(object);
   }
+  instance.interval = setInterval(watchQueue(instance), instance.intervalMs);
+}
+
+function processQueueSync(instance) {
+
+  var object = next(instance.queue, instance.lifo);
+
+  if (object) {
+
+    instance.cb(object, function() {
+      processQueueSync(instance);
+    });
+  }
+  else {
+    instance.interval = setInterval(watchQueue(instance), instance.intervalMs);
+  }
+}
+
+function next(queue, isLifo) {
+  var object = null;
+
+  if (isLifo === true) {
+    object = queue.pop();
+  }
+  else {
+    object = queue.shift();
+  }
+  return object;
 }

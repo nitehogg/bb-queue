@@ -1,6 +1,6 @@
 {
   "name": "bb-queue",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A simple, automated queue processor",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,9 @@
   "keywords": [
     "queue",
     "auto",
-    "automatic"
+    "automatic",
+    "synchronous",
+    "asynchronous"
   ],
   "author": "NiteHogg",
   "license": "ISC",
